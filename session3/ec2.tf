@@ -1,5 +1,5 @@
 resource "aws_instance" "main" {
-  ami           = "ami-0f88e80871fd81e91"
+  ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
   tags = {
     Name        = "${var.env}-instance"
