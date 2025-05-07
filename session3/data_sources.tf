@@ -19,3 +19,10 @@ data "aws_ami" "amazon_linux_2023" {
     values  = ["hvm"]
   }
 }
+
+data "template_file" "user_data" {
+  template = file ("userdata.sh")
+  vars = {
+    environment = var.env
+  }
+}

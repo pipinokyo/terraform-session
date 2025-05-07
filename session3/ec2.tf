@@ -5,7 +5,7 @@ resource "aws_instance" "main" {
     Name        = "${var.env}-instance"
     Environment = var.env  }
   vpc_security_group_ids = [aws_security_group.main.id]
-  user_data = file("userdata.sh")
+  user_data = data.template_file.user_data.rendered
 }
 
 resource "aws_security_group" "main" {
