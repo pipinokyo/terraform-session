@@ -20,10 +20,12 @@ resource "aws_internet_gateway" "app_igw1" {
 # Public subnets are subnets that have a route to the internet through an internet gateway.
 # Instances in public subnets can communicate directly with the internet.
 resource "aws_subnet" "app_pub_subnet" {
-  count             = length(var.public_subnets_cidrs)
-  vpc_id            = aws_vpc.app_vpc1.id
-  cidr_block        = element(var.public_subnets_cidrs, count.index)
-  availability_zone = element(var.availability_zones, count.index)
+  count                   = length(var.public_subnets_cidrs)
+  vpc_id                  = aws_vpc.app_vpc1.id
+  cidr_block              = element(var.public_subnets_cidrs, count.index)
+  availability_zone       = element(var.availability_zones, count.index)
+  map_public_ip_on_launch = true  # This is the critical line
+  
   tags = {
     Name = "app-pub-subnet-${count.index + 1}"
   }
@@ -70,7 +72,6 @@ resource "aws_route" "public_internet_gateway" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.app_igw1.id
 }
-
 # Associate Public Subnets with Public Route Table
 # The public subnets must be associated with the public route table.
 # This allows instances in the public subnets to use the route table to route traffic to the internet.

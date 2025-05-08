@@ -15,8 +15,8 @@ output "private_subnet_ids" {
 
 output "ec2_instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = aws_instance.main.public_ip
-  depends_on  = [aws_instance.main]  # Explicit dependency
+  value       = try(aws_instance.main.public_ip, "Not assigned")
+  depends_on  = [aws_instance.main]
 }
 output "ec2_instance_id" {
   description = "ID of the EC2 instance"
@@ -35,5 +35,5 @@ output "nat_gateway_ip" {
 
 output "application_url" {
   description = "URL to access the web application"
-  value       = "http://${aws_instance.main.public_ip}"
+  value       = try("http://${aws_instance.main.public_ip}", "Instance has no public IP")
 }
