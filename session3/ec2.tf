@@ -1,5 +1,4 @@
 resource "aws_instance" "main" {
-  count = 5
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
   tags = {
