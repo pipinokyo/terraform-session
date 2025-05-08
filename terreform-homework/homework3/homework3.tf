@@ -165,3 +165,87 @@ resource "aws_route" "private_nat_gateway" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.app_natgateway1.id
 }
+
+
+# Security Group for WordPress EC2 instance
+resource "aws_security_group" "wordpress_sg" {
+  name        = "wordpress-security-group"
+  description = "Allow HTTP, HTTPS and SSH traffic"
+  vpc_id      = aws_vpc.app_vpc1.id
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Restrict this to your IP in production
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "wordpress-security-group"
+  }
+}
+
+# EC2 Instance for WordPress
+resource "aws_instance" "wordpress" {
+  ami                    = "ami-0c7217cdde317cfec" # Amazon Linux 2023 AMI - change as needed
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.app_pub_subnet_1a.id
+  vpc_security_group_ids = [aws_security_group.wordpress_sg.id]
+  key_name               = "windows powershell" # Using your specified RSA key pair
+  associate_public_ip_address = true
+
+  user_data = <<-EOF
+              #!/bin/bash
+              # Update the system
+              sudo yum update -y
+              
+              # Install Apache, PHP and MySQL client
+              sudo yum install -y httpd php php-mysqlnd php-gd php-xml mariadb105
+              
+              # Start Apache and enable it to start on boot
+              sudo systemctl start httpd
+              sudo systemctl enable httpd
+              
+              # Install WordPress
+              cd /var/www/html
+              sudo wget https://wordpress.org/latest.tar.gz
+              sudo tar -xzf latest.tar.gz
+              sudo cp -r wordpress/* .
+              sudo rm -rf wordpress latest.tar.gz
+              
+              # Set permissions
+              sudo chown -R apache:apache /var/www/html
+              sudo chmod -R 755 /var/www/html
+              
+              # Restart Apache
+              sudo systemctl restart httpd
+              EOF
+
+  tags = {
+    Name = "WordPress-Server"
+  }
+}
