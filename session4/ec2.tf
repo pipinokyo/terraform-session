@@ -1,13 +1,15 @@
 resource "aws_instance" "main" {
-  ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = var.instance_type
+  ami                       = data.aws_ami.amazon_linux_2023.id
+  instance_type             = var.instance_type
+  subnet_id                 = aws_subnet.app_pub_subnet[0].id
+  vpc_security_group_ids    = [aws_security_group.main.id]
+  associate_public_ip_address = true  # Explicitly enable public IP
+  user_data                 = filebase64("${path.module}/userdata.sh")
+  
   tags = {
     Name        = "${var.env}-instance"
-    Environment = var.env  }
-  vpc_security_group_ids = [aws_security_group.main.id]
-  user_data = templatefile("userdata.sh", {
-    environment = var.env
-  })
+    Environment = var.env  
+  }
 }
 
 resource "aws_security_group" "main" {

@@ -5,7 +5,7 @@ variable "instance_type" {
 }
 
 variable "env" {
-  description = "Environment"
+  description = "Environment name (dev, staging, prod)"
   type        = string
   default     = "dev"
 }
