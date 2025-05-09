@@ -5,7 +5,7 @@ variable "env" {
 }
   
 variable "provider_name" {
-    description = "Provider name"
+    description = "provider name"
     type        = string
     default     = "aws"
   
