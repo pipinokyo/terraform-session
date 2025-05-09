@@ -8,5 +8,6 @@ locals {
     Team = var.team
     Owner = var.owner
     Managed_by = var.managed_by
+    Market = "us"
   }
 }
