@@ -14,8 +14,7 @@ resource "aws_db_instance" "main" {
   username             = "admin"
   password             = random_password.main_db_password.result
   parameter_group_name = "default.mysql8.0"
-  skip_final_snapshot  = "prod" != var.env ? false : true
-  final_snapshot_identifier = var.env != "prod" ? null : "${var.env}-snapshot"
+  skip_final_snapshot  = true
 }
 
 resource "random_password" "main_db_password" {
