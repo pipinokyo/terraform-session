@@ -1,6 +1,6 @@
 # Terraform script to create a VPC with public and private subnets, route tables, and NAT gateway
 resource "aws_vpc" "app_vpc1" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr_block
   tags = {
     Name = "app-vpc1"
   }
