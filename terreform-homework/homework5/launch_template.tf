@@ -29,15 +29,10 @@ resource "aws_launch_template" "app_lt" { # Begins defining the launch template 
   instance_type          = var.instance_type # Uses the instance type we defined in variables.tf (like "t2.micro")
   vpc_security_group_ids = [aws_security_group.lt_sg.id] # Applies the security group we just created
 
-  user_data = base64encode(<<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              sudo yum install -y httpd
-              sudo systemctl start httpd
-              sudo systemctl enable httpd
-              echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
-              EOF
-              )
+   user_data = base64encode(templatefile("${path.module}/userdata.sh", {
+    env = var.env  # Passes `var.env` as `${env}` in the script
+  }))
+
 
   tag_specifications { # Automatically tags all launched instances with:
     resource_type = "instance"

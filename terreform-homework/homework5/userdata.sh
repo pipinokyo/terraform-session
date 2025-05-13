@@ -24,7 +24,7 @@ cat <<EOF > /var/www/html/index.html
     </style>
   </head>
   <body>
-    <h1>${var.env} Environment Instance is Running!</h1>
+    <h1>${env} Environment Instance is Running!</h1>
     <p>Hostname: $(hostname)</p>
     <p>Availability Zone: $(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)</p>
   </body>
