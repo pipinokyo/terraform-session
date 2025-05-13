@@ -37,3 +37,15 @@ variable "env" {
 # variable "availability_zones" {
 #   default = ["us-east-1a", "us-east-1b", "us-east-1c"]
 # }
+
+variable "domain_name" {
+  description = "The base domain name"
+  type        = string
+  default     = "machtap.com"
+}
+
+variable "subject_alternative_names" {
+  description = "List of subject alternative names"
+  type        = list(string)
+  default     = ["*.machtap.com"]
+}

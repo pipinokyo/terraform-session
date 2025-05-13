@@ -37,21 +37,21 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
-resource "aws_lb_listener" "app_listener" {
-  load_balancer_arn = aws_lb.app_alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+# resource "aws_lb_listener" "app_listener" {
+#   load_balancer_arn = aws_lb.app_alb.arn
+#   port              = "80"
+#   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app_tg.arn
-  }
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.app_tg.arn
+#   }
 
-  tags = {
-    Name        = "${var.env}-app-listener"
-    Environment = var.env
-  }
-}
+#   tags = {
+#     Name        = "${var.env}-app-listener"
+#     Environment = var.env
+#   }
+# }
 
 resource "aws_security_group" "alb_sg" {
   name        = "${var.env}-alb-sg"
@@ -81,6 +81,47 @@ resource "aws_security_group" "alb_sg" {
 
   tags = {
     Name        = "${var.env}-alb-sg"
+    Environment = var.env
+  }
+}
+
+# HTTPS Listener
+resource "aws_lb_listener" "app_https_listener" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate_validation.cert_validation.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+
+  tags = {
+    Name        = "${var.env}-app-https-listener"
+    Environment = var.env
+  }
+}
+
+# Redirect HTTP to HTTPS
+resource "aws_lb_listener" "app_http_redirect" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  tags = {
+    Name        = "${var.env}-app-http-redirect"
     Environment = var.env
   }
 }
