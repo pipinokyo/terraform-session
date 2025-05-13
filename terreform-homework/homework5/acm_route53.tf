@@ -47,7 +47,8 @@ data "aws_route53_zone" "main" { # Looks up an existing Route53 hosted zone
 # Route53 ALB alias record
 resource "aws_route53_record" "app_alias" { # Creates a DNS record pointing to our ALB
   zone_id = data.aws_route53_zone.main.zone_id # Places record in our hosted zone
-  name    = var.env == "prod" ? var.domain_name : "${var.env}.${var.domain_name}" # Sets the record name (e.g., "dev.machtap.com" or "machtap.com")
+  name = var.domain_name  # to use just the domain (e.g., "machtap.com")
+  # name    = var.env == "prod" ? var.domain_name : "${var.env}.${var.domain_name}" # Sets the record name (e.g., "dev.machtap.com" or "machtap.com")
   # If environment is "prod", use the root domain; otherwise, use the environment prefix
   # Example: For "prod", it would be "machtap.com"; for "dev", it would be "dev.machtap.com"
   type    = "A" # Specifies this is an A record (for IPv4 addresses)
