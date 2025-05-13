@@ -1,5 +1,5 @@
 #!/bin/bash
-
+sudo dnf install -y curl || sudo yum install -y curl
 # Update system and install Apache
 sudo dnf update -y
 sudo dnf install -y httpd
