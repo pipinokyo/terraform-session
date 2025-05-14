@@ -1,13 +1,15 @@
 resource "aws_instance" "main" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
+
   tags = {
     Name        = "${var.env}-instance"
-    Environment = var.env  }
+    Name2       = format("%s-instance", var.env)
+    Environment = var.env 
+  }
+
   vpc_security_group_ids = [aws_security_group.main.id]
-  user_data = templatefile("userdata.sh", {
-    environment = var.env
-  })
+  user_data = templatefile("userdata.sh", { environment = var.env })
 }
 
 resource "aws_security_group" "main" {

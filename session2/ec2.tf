@@ -35,3 +35,11 @@ resource "aws_security_group" "simple_sg" {
   }
 }
 
+# Interpolation
+# Block && Argument
+# Terraform has 2 main blocks (resource vs data source)
+# Resource Block = create and manage resources
+# Resource Block has 2 labels = first_label, second_label
+# FIRST_LABEL = indicates the resource that you want to create or manage, defined by Hashicorp
+# SECOND_LABEL = Logical name or logical ID for your Terraform resource, unique within your working directory, defined by Author
+# Argument = configurations of your resource, key = value
