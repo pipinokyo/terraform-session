@@ -7,6 +7,7 @@ resource "aws_instance" "main" {
   
   tags = {
     Name        = "${var.env}-instance"
+    Name2       = format("%s-instance", var.env)
     Environment = var.env  
   }
 }
