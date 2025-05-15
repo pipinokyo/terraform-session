@@ -5,8 +5,18 @@ module "vpc" {
   public_subnets_cidrs  = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
   private_subnets_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
   availability_zones    = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  env                   = var.env
-  common_tags           = local.common_tags
+  env                  = var.env
+  common_tags          = local.common_tags
+}
+
+module "acm_route53" {
+  source = "../../../modules/acm_route53"
+
+  domain_name    = var.domain_name
+  env           = var.env
+  alb_dns_name   = module.alb.alb_dns_name
+  alb_zone_id   = module.alb.alb_zone_id
+  common_tags   = local.common_tags
 }
 
 module "alb" {
@@ -29,15 +39,4 @@ module "asg" {
   alb_security_group_id = module.alb.alb_security_group_id
   target_group_arn     = module.alb.target_group_arn
   common_tags          = local.common_tags
-}
-
-module "acm_route53" {
-  source = "../../../modules/acm_route53"
-
-  domain_name               = local.domain_name
-  subject_alternative_names = [local.www_domain]
-  env                      = var.env
-  alb_dns_name              = module.alb.alb_dns_name
-  alb_zone_id              = module.alb.alb_zone_id
-  common_tags              = local.common_tags
 }

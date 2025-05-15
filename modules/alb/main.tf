@@ -71,8 +71,6 @@ resource "aws_lb_listener" "https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_tg.arn
   }
-
-  tags = merge(var.common_tags, { Name = "${var.env}-https-listener" })
 }
 
 resource "aws_lb_listener" "http_redirect" {
@@ -89,6 +87,4 @@ resource "aws_lb_listener" "http_redirect" {
       status_code = "HTTP_301"
     }
   }
-
-  tags = merge(var.common_tags, { Name = "${var.env}-http-redirect" })
 }

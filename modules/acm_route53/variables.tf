@@ -3,17 +3,6 @@ variable "domain_name" {
   type        = string
 }
 
-variable "subject_alternative_names" {
-  description = "List of subject alternative names"
-  type        = list(string)
-  default     = []
-}
-
-variable "env" {
-  description = "Environment name"
-  type        = string
-}
-
 variable "alb_dns_name" {
   description = "DNS name of the ALB"
   type        = string
@@ -27,4 +16,9 @@ variable "alb_zone_id" {
 variable "common_tags" {
   description = "Common tags for all resources"
   type        = map(string)
+}
+
+variable "env" {
+  description = "Environment name"
+  type        = string
 }
