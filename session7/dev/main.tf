@@ -1,7 +1,7 @@
 
 
 module "sg" {
-  source = "../../modules/sg"
+  source = "../../modules/sg" // Where the child module is. When you call child module locally, you use the path
   name = "dev-instance-sg"
   description = "Security group for dev instance"
   ingress_ports = [22]
@@ -11,8 +11,6 @@ module "sg" {
 module "ec2" {
   source = "../../modules/ec2"
   env = "dev"
-  name = "dev-instance"
-  description = "EC2 instance for dev environment"
   instance_type = "t2.micro"
   ami = data.aws_ami.amazon_linux_2023.id # Amazon Linux 2 AMI
   vpc_security_group_ids = [module.sg.aws_security_group_id]
