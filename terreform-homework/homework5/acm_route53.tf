@@ -24,7 +24,7 @@ resource "aws_route53_record" "cert_validation" {   # Creates DNS records needed
     }
   }                   # Creates a map of records needed for each domain
 
-  allow_overwrite = true   # Allows overwriting existing records (if any)
+  allow_overwrite = true            # Allows overwriting existing records (if any)
   name            = each.value.name  # Name (e.g., "dev.machtap.com")
   records         = [each.value.record] # Value (the validation string)
   ttl             = 60  # Time to live (TTL) for the DNS record (60 seconds)

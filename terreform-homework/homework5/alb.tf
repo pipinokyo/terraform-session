@@ -1,5 +1,5 @@
 resource "aws_lb" "app_alb" { # Starts defining an Application Load Balancer resource named "app_alb"
-  name               = "${var.env}-app-alb" # Names the load balancer with environment prefix (like "dev-app-alb")
+  name               = substr(replace(local.name, "rtype", "app-alb"), 0, 32) # Names the load balancer with environment prefix (like "dev-app-alb")
   internal           = false                # Sets the load balancer to be internet-facing (not internal)
   load_balancer_type = "application"   # Specifies this is an Application Load Balancer (works at HTTP level)
   security_groups    = [aws_security_group.alb_sg.id] # Attaches the security group we'll define later
@@ -7,14 +7,14 @@ resource "aws_lb" "app_alb" { # Starts defining an Application Load Balancer res
 
   enable_deletion_protection = false # Allows the ALB to be deleted (true would protect against accidental deletion)
 
-  tags = {  # Adds tags for identification and organization
-    Name        = "${var.env}-app-alb"
-    Environment = var.env
-  }
+  tags = merge(
+    local.common_tags,
+    {Name = replace(local.name, "rtype", "app-alb")} # Adds tags for identification and organization
+  ) # Merges common tags with a specific "Name" tag for the ALB
 }
 
 resource "aws_lb_target_group" "app_tg" { # Starts defining a target group named "app_tg"
-  name     = "${var.env}-app-tg"  # Names the target group with environment prefix (like "dev-app-tg")
+  name     = substr(replace(local.name, "rtype", "app-tg"), 0, 32)  # Names the target group with environment prefix (like "dev-app-tg")
   port     = 80                   # Listens on port 80 for HTTP traffic
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id # Places it in our VPC (fetched from remote state)
@@ -31,30 +31,16 @@ resource "aws_lb_target_group" "app_tg" { # Starts defining a target group named
     matcher             = "200-399" # Accepts HTTP 200-399 status codes
   }
 
-  tags = {  # Adds identifying tags
-    Name        = "${var.env}-app-tg"
-    Environment = var.env
-  }
+  tags = merge(
+    local.common_tags,
+    {Name = replace(local.name, "rtype", "app-tg")} # Adds tags for identification and organization
+  )  # Adds identifying tags
+    
+  
 }
 
-# resource "aws_lb_listener" "app_listener" {
-#   load_balancer_arn = aws_lb.app_alb.arn
-#   port              = "80"
-#   protocol          = "HTTP"
-
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.app_tg.arn
-#   }
-
-#   tags = {
-#     Name        = "${var.env}-app-listener"
-#     Environment = var.env
-#   }
-# }
-
 resource "aws_security_group" "alb_sg" { # Starts security group definition for ALB
-  name        = "${var.env}-alb-sg"    # Names it with environment prefix (like "dev-alb-sg")
+  name        = replace(local.name, "rtype", "alb-sg")   # Names it with environment prefix (like "dev-alb-sg")
   description = "Security group for ALB"  # Describes its purpose
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id  # Associates with our VPC (fetched from remote state)
  
@@ -79,10 +65,10 @@ resource "aws_security_group" "alb_sg" { # Starts security group definition for 
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name        = "${var.env}-alb-sg"
-    Environment = var.env
-  }
+  tags = merge(
+    local.common_tags,
+    {Name = replace(local.name, "rtype", "alb-sg")} # Adds tags for identification and organization
+  ) # Merges common tags with a specific "Name" tag for the security group
 }
 
 # HTTPS Listener
@@ -98,10 +84,10 @@ resource "aws_lb_listener" "app_https_listener" {  #Starts HTTPS listener defini
     target_group_arn = aws_lb_target_group.app_tg.arn
   }
 
-  tags = {
-    Name        = "${var.env}-app-https-listener"
-    Environment = var.env
-  }
+  tags = merge(
+    local.common_tags,
+    {Name = replace(local.name, "rtype", "app-https-listener")} # Adds tags for identification and organization
+  ) # Merges common tags with a specific "Name" tag for the HTTPS listener
 }
 
 # Redirect HTTP to HTTPS
@@ -120,8 +106,8 @@ resource "aws_lb_listener" "app_http_redirect" {   # Starts HTTP listener defini
     }
   }
 
-  tags = {
-    Name        = "${var.env}-app-http-redirect"
-    Environment = var.env
-  }
+  tags = merge(
+    local.common_tags,
+    {Name = replace(local.name, "rtype", "app-http-redirect")} # Adds tags for identification and organization
+  ) # Merges common tags with a specific "Name" tag for the HTTP redirect listener
 }

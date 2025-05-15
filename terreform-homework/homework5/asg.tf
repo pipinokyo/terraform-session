@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "app_asg" { # Starts defining an Auto Scaling Group resource named "app_asg"
-  name                = "${var.env}-app-asg" # Names the ASG with environment prefix (e.g., "dev-app-asg")
+  name                = replace(local.name, "rtype", "app-asg") # Names the ASG with environment prefix (e.g., "dev-app-asg")
   min_size            = 1 # Minimum number of instances that must always run (even under low load)
   max_size            = 3 # Maximum number of instances allowed (scaling won't exceed this)
   desired_capacity    = 2 # Ideal number of instances to maintain (ASG will aim for this)

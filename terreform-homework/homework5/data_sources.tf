@@ -37,3 +37,15 @@ data "terraform_remote_state" "vpc" {
 #     environment = var.env
 #   }
 # }
+
+
+# data "aws_route53_zone" "existing_zone" {
+#   name         = var.domain_name
+#   private_zone = false
+# }
+
+# data "aws_acm_certificate" "ISSUED" {
+#   domain   = var.domain_name
+#   statuses = ["ISSUED"]
+#   most_recent = true
+# }
