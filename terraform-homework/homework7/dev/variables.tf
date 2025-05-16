@@ -69,3 +69,9 @@ variable "managed_by" {
   type        = string
   default     = "terraform"
 }
+
+variable "zone_id" {
+  description = "Route53 zone ID"
+  type        = string
+  default = "Z05622601YFQSX2KL9NQ"
+}

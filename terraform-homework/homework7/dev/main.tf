@@ -17,6 +17,7 @@ module "acm_route53" {
   alb_dns_name   = module.alb.alb_dns_name
   alb_zone_id   = module.alb.alb_zone_id
   common_tags   = local.common_tags
+  zone_id       = var.zone_id
 }
 
 module "alb" {
