@@ -33,7 +33,7 @@ output "application_url" {
   value       = "https://${var.domain_name}"
 }
 
-output "hosted_zone_id" {
-  description = "ID of the Route53 hosted zone"
-  value       = module.acm_route53.hosted_zone_id
-}
+# output "hosted_zone_id" {
+#   description = "ID of the Route53 hosted zone"
+#   value       = module.acm_route53.hosted_zone_id
+# }
