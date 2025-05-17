@@ -73,5 +73,5 @@ variable "managed_by" {
 variable "zone_id" {
   description = "Route53 zone ID"
   type        = string
-  default = "Z05622601YFQSX2KL9NQ"
+  default     = "Z05622601YFQSX2KL9NQ"
 }

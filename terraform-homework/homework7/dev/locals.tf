@@ -1,5 +1,6 @@
 locals {
-  name = "${var.provider_name}-${var.region}-rtype-${var.business_unit}-${var.tier}-${var.project}-${var.env}"
+  full_name = "${var.provider_name}-${var.region}-rtype-${var.business_unit}-${var.tier}-${var.project}-${var.env}"
+  short_name = substr("${var.project}-${var.env}-${var.business_unit}", 0, 24)
   
   common_tags = {
     Environment    = var.env
@@ -9,6 +10,6 @@ locals {
     Owner          = var.owner
     Managed_by     = var.managed_by
     Market         = "us"
-    Name           = local.name
+    Name           = local.full_name
   }
 }

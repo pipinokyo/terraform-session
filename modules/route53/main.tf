@@ -1,11 +1,5 @@
-data "aws_acm_certificate" "issued" {
-  domain      = var.domain_name
-  statuses    = ["ISSUED"]
-  most_recent = true
-}
-
-resource "aws_route53_record" "root" {
-  zone_id = var.zone_id
+resource "aws_route53_record" "alb_alias" {
+  zone_id = var.hosted_zone_id
   name    = var.domain_name
   type    = "A"
 

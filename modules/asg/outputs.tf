@@ -1,9 +1,9 @@
 output "asg_name" {
-  description = "Name of the Auto Scaling Group"
+  description = "The name of the Auto Scaling Group"
   value       = aws_autoscaling_group.app_asg.name
 }
 
 output "launch_template_id" {
-  description = "ID of the launch template"
+  description = "The ID of the Launch Template"
   value       = aws_launch_template.app_lt.id
 }

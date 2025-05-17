@@ -1,43 +1,64 @@
-module "vpc" {
-  source = "../../../modules/vpc"
+module "network" {
+  source = "../../../modules/network"
 
-  vpc_cidr_block        = "10.0.0.0/16"
-  public_subnets_cidrs  = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
-  availability_zones    = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  env                  = var.env
-  common_tags          = local.common_tags
+  vpc_cidr            = "10.0.0.0/16"
+  public_subnet_cidrs = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
+  private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24", "10.0.5.0/24"]
+  tags                = local.common_tags
 }
 
-module "acm_route53" {
-  source = "../../../modules/acm_route53"
+module "security_groups" {
+  source = "../../../modules/security_groups"
 
-  domain_name    = var.domain_name
-  env           = var.env
-  alb_dns_name   = module.alb.alb_dns_name
-  alb_zone_id   = module.alb.alb_zone_id
-  common_tags   = local.common_tags
-  zone_id       = var.zone_id
+  vpc_id = module.network.vpc_id
+  tags   = local.common_tags
+}
+
+module "acm" {
+  source = "../../../modules/acm"
+
+  domain_name               = var.domain_name
+  subject_alternative_names = var.subject_alternative_names
+  tags                      = local.common_tags
 }
 
 module "alb" {
   source = "../../../modules/alb"
 
-  env              = var.env
-  vpc_id           = module.vpc.vpc_id
-  public_subnet_ids = module.vpc.public_subnet_ids
-  certificate_arn   = module.acm_route53.certificate_arn
-  common_tags      = local.common_tags
+  vpc_id               = module.network.vpc_id
+  public_subnet_ids    = module.network.public_subnet_ids
+  alb_security_group_id = module.security_groups.alb_sg_id
+  acm_certificate_arn  = module.acm.certificate_arn
+  short_name           = local.short_name  # Add this line
+  tags                 = local.common_tags
 }
-
 module "asg" {
   source = "../../../modules/asg"
 
-  env                  = var.env
+  ami_id               = data.aws_ami.amazon_linux_2.id
   instance_type        = var.instance_type
-  vpc_id               = module.vpc.vpc_id
-  private_subnet_ids   = module.vpc.private_subnet_ids
-  alb_security_group_id = module.alb.alb_security_group_id
+  ec2_security_group_id = module.security_groups.ec2_sg_id
+  private_subnet_ids   = module.network.private_subnet_ids
   target_group_arn     = module.alb.target_group_arn
-  common_tags          = local.common_tags
+  tags                 = local.common_tags
+}
+
+module "route53" {
+  source = "../../../modules/route53"
+
+  hosted_zone_id = var.zone_id
+  domain_name    = var.domain_name
+  alb_dns_name   = module.alb.alb_dns_name
+  alb_zone_id    = module.alb.zone_id
+  tags           = local.common_tags
+}
+
+data "aws_ami" "amazon_linux_2" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
+  }
 }

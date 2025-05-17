@@ -1,8 +1,3 @@
-variable "env" {
-  description = "Environment name"
-  type        = string
-}
-
 variable "vpc_id" {
   description = "VPC ID"
   type        = string
@@ -13,12 +8,22 @@ variable "public_subnet_ids" {
   type        = list(string)
 }
 
-variable "certificate_arn" {
-  description = "ACM certificate ARN"
+variable "alb_security_group_id" {
+  description = "ALB Security Group ID"
   type        = string
 }
 
-variable "common_tags" {
+variable "acm_certificate_arn" {
+  description = "ACM Certificate ARN"
+  type        = string
+}
+
+variable "tags" {
   description = "Common tags for all resources"
   type        = map(string)
+}
+
+variable "short_name" {
+  description = "Shortened name for resources with length limits"
+  type        = string
 }
