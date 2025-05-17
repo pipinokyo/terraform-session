@@ -1,25 +1,25 @@
-variable "env" {
-  description = "Environment name (dev, staging, prod)"
-  type        = string
-  default     = "dev"
+variable "env" {                                                             # Environment variable
+  description = "Environment name (dev, staging, prod)"                      # Name of the environment (e.g., dev, staging, prod).
+  type        = string                                                       # Type of the variable (string). 
+  default     = "dev"                                                        # Default value for the environment variable (dev).
 }
 
-variable "instance_type" {
-  description = "Type of instance to create"
-  type        = string
-  default     = "t2.micro"
+variable "instance_type" {                                                    # Instance type variable              
+  description = "Type of instance to create"                                  # Description of the variable (type of instance to create). 
+  type        = string                                                        # Type of the variable (string).
+  default     = "t2.micro"                                                    # Default value for the instance type variable (t2.micro). 
 }
 
-variable "domain_name" {
-  description = "Domain name for ACM certificate and Route53"
-  type        = string
-  default     = "machtap.com"
+variable "domain_name" {                                                       # Domain name variable
+  description = "Domain name for ACM certificate and Route53"                  # Description of the variable (domain name for ACM certificate and Route53).
+  type        = string                                                         # Type of the variable (string).
+  default     = "machtap.com"                                                  # Default value for the domain name variable (machtap.com). 
 }
 
-variable "subject_alternative_names" {
-  description = "List of subject alternative names for ACM certificate"
-  type        = list(string)
-  default     = ["www.machtap.com"]
+variable "subject_alternative_names" {                                         # Subject alternative names variable                
+  description = "List of subject alternative names for ACM certificate"        # Description of the variable (list of subject alternative names for ACM certificate).
+  type        = list(string)                                                   # Type of the variable (list of strings).
+  default     = ["www.machtap.com"]                                            # Default value for the subject alternative names variable (list of strings).
 }
 
 variable "provider_name" {

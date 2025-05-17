@@ -1,6 +1,6 @@
-variable "domain_name" {
-  description = "Domain name for ACM certificate"
-  type        = string
+variable "domain_name" {                                    
+  description = "Domain name for ACM certificate"           
+  type        = string  
 }
 
 variable "subject_alternative_names" {
