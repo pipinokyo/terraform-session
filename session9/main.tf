@@ -1,5 +1,5 @@
 resource "aws_instance" "first_ec2" {
-  ami           = data.aws_ami.amazon_linux_2023.image_id
+  ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = "t2.micro"
   tags = {
     Name        = "aws-session9-instance"
@@ -25,4 +25,9 @@ data "aws_ami" "amazon_linux_2023" {
     name    = "virtualization-type"
     values  = ["hvm"]
   }
+}
+
+
+resource "aws_sqs_queue" "main" {   
+    name = "aws-session9-sqs"
 }
