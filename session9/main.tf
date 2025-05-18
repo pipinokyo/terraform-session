@@ -1,12 +1,17 @@
-resource "aws_instance" "first_ec2" {
+resource "aws_instance" "main" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = "t2.micro"
   tags = {
     Name        = "aws-session9-instance"
-    Environment = "dev"
+    Environment = var.env
   }
 }
 
+variable "env" {        
+  description = "Environment name"
+  type        = string
+  
+}
 data "aws_ami" "amazon_linux_2023" {
   most_recent      = true
   owners           = ["amazon"]
